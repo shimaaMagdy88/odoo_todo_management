@@ -1,7 +1,7 @@
 <odoo>
     <menuitem
         id="todo_management_root_menu"
-        name="To-Do List"
+        name="To-Do App"
         sequence="1"
         web_icon="todo_management, static\description\icon.png"/>
 
