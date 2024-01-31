@@ -20,7 +20,7 @@ class TodoTask(models.Model):
     active = fields.Boolean(default=True)
     is_late = fields.Boolean()
 
-    @api.depends('timesheet_line_ids', 'estimated_time')
+    @api.depends('timesheet_line_ids', 'estimated_time', 'timesheet_line_ids.hours')
     def _compute_count_hours(self):
         for rec in self:
             if rec.timesheet_line_ids:
