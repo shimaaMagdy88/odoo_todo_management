@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_assign_tasks_wizard_form" model="ir.ui.view">
+        <field name="name">Assign Tasks Wizard</field>
+        <field name="model">assign.task.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="confirm_user" type="object" string="Confirm" class="oe_highlight"/>
+                        <button name="cancel" special="cancel" string="Cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="assign_tasks_wizard_action" model="ir.actions.act_window">
+        <field name="name">Assign Tasks</field>
+        <field name="res_model">assign.task.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_todo_task_ids': active_ids}</field>
+    </record>
+</odoo>

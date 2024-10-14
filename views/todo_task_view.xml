@@ -5,6 +5,11 @@
         <field name="model">todo.task</field>
         <field name="arch" type="xml">
             <tree decoration-danger="is_late">
+                <header>
+                    <button type="action"
+                            name="%(todo_management.assign_tasks_wizard_action)d"
+                            string="Assign To" class="oe_highlight ml-2"/>
+                </header>
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="due_date"/>
@@ -26,24 +31,26 @@
                     <button name="action_new" type="object" string="New" states="in_progress,completed,closed"/>
                     <button name="action_in_progress" type="object" string="In Progress" states="new"/>
                     <button name="action_completed" type="object" string="Completed" states="in_progress" class="btn-success"/>
+                    <button name="test" type="object" string="Test"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="partner_id"/>
-                            <field name="description"/>
+                            <field name="sequence" attrs="{'readonly': [('state', 'in', ['completed', 'closed'])]}"/>
+                            <field name="name" attrs="{'readonly': [('state', 'in', ['completed', 'closed'])]}"/>
+                            <field name="partner_id" attrs="{'readonly': [('state', 'in', ['completed', 'closed'])]}"/>
+                            <field name="description" attrs="{'readonly': [('state', 'in', ['completed', 'closed'])]}"/>
                         </group>
                         <group>
-                            <field name="due_date"/>
-                            <field name="estimated_time"/>
+                            <field name="due_date" attrs="{'readonly': [('state', 'in', ['completed', 'closed'])]}"/>
+                            <field name="estimated_time" attrs="{'readonly': [('state', 'in', ['completed', 'closed'])]}"/>
                             <field name="active" invisible="1"/>
                             <field name="count_hours" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
                         <page name="timesheet_line_ids" string="Timesheet">
-                            <field name="timesheet_line_ids">
+                            <field name="timesheet_line_ids" attrs="{'readonly': [('state', 'in', ['completed', 'closed'])]}">
                                 <tree editable="bottom">
                                     <field name="description"/>
                                     <field name="date"/>
@@ -82,9 +89,23 @@
         </field>
     </record>
 
+    <record id="sequence_appointment" model="ir.sequence">
+        <field name="name">Todo Task</field>
+        <field name="code">todo_task</field>
+        <field name="prefix">TS</field>
+        <field name="padding">5</field>
+        <field eval="False" name="company_id"/>
+    </record>
+
     <record id="todo_task_action" model="ir.actions.act_window">
-        <field name="name">Todo Task Action</field>
+        <field name="name">Todo Tasks</field>
         <field name="res_model">todo.task</field>
+    </record>
+
+    <record id="todo_my_task_action" model="ir.actions.act_window">
+        <field name="name">Todo My Tasks</field>
+        <field name="res_model">todo.task</field>
+        <field name="domain">[('partner_id.user_ids', '=', uid)]</field>
     </record>
 
     <record id="task_closed_server_action" model="ir.actions.server">
@@ -113,5 +134,12 @@
         id="todo_task_menu"
         name="All Tasks"
         parent="todo_menu"
-        action="todo_task_action"/>
+        action="todo_task_action" sequence="2"
+        groups="todo_task_manager_group"/>
+
+    <menuitem
+        id="todo_my_task_menu"
+        name="My Tasks"
+        parent="todo_menu"
+        action="todo_my_task_action" sequence="1"/>
 </odoo>

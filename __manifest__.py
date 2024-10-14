@@ -8,8 +8,10 @@
     'depends': ['base', 'mail'],
     'data': [
         'security/ir.model.access.csv',
-        'views/base_menu.xml',
+        'security/security.xml',
         'views/todo_task_view.xml',
+        'views/base_menu.xml',
+        'wizard/assign_tasks_wizard.xml',
         'reports/todo_task_report.xml',
     ],
     'application': True,

@@ -1,24 +1,43 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
+
 class TodoTask(models.Model):
     _name = 'todo.task'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Todo Task'
 
-    name = fields.Char(string='Task Name', required=1)
+    name = fields.Char(string='Task Name', required=1, translate=True)
     partner_id = fields.Many2one('res.partner', string='Assign To', required=1)
-    description = fields.Text()
+    description = fields.Text(translate=True)
     due_date = fields.Date(string='Due Date')
     state = fields.Selection([('new', 'New'),
                               ('in_progress', 'In Progress'),
                               ('completed', 'Completed'),
-                              ('closed', 'Closed')], default='new')
+                              ('closed', 'Closed')], default='new', translate=True)
     estimated_time = fields.Float()
     timesheet_line_ids = fields.One2many('timesheet.line', 'task_id')
     count_hours = fields.Float(compute='_compute_count_hours')
     active = fields.Boolean(default=True)
     is_late = fields.Boolean()
+    sequence = fields.Char(string='Sequence', readonly=True)
+
+    def test(self):
+        print('hh')
+        # my_user_id = self.env['res.users'].browse(2)
+        # print('user', my_user_id)
+        # print('partner of this user', my_user_id.partner_id)
+        if self.partner_id:
+            print('current partner', self.partner_id)
+            print('user of current partner', self.env['res.users'].search([('partner_id', '=', self.partner_id.id)]))
+            print('--------------------')
+            print('user of current partner', self.partner_id.user_id)
+            print('user of current partner', self.partner_id.user_ids)
+
+    @api.model
+    def create(self, vals):
+        vals['sequence'] = self.env['ir.sequence'].next_by_code('todo_task')
+        return super(TodoTask, self).create(vals)
 
     @api.depends('timesheet_line_ids', 'estimated_time', 'timesheet_line_ids.hours')
     def _compute_count_hours(self):
