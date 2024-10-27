@@ -8,7 +8,7 @@ class TodoTask(models.Model):
     _description = 'Todo Task'
 
     name = fields.Char(string='Task Name', required=1, translate=True)
-    partner_id = fields.Many2one('res.partner', string='Assign To', required=1)
+    partner_id = fields.Many2one('res.partner', string='Assign To', required=0)
     description = fields.Text(translate=True)
     due_date = fields.Date(string='Due Date')
     state = fields.Selection([('new', 'New'),
